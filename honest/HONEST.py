@@ -23,8 +23,7 @@ from statistics import median
 
 # 3RD PARTY MODULES
 from bitshares_signing import broker
-from bitshares_signing.rpc import (rpc_account_id, rpc_get_objects,
-                                   wss_handshake)
+from bitshares_signing.rpc import rpc_account_id, rpc_get_objects, wss_handshake
 
 # HONEST MODULES
 from config_nodes import public_nodes
@@ -32,9 +31,19 @@ from pricefeed_cex import pricefeed_cex
 from pricefeed_dex import pricefeed_dex
 from pricefeed_forex import pricefeed_forex
 from proxy_list import ProxyManager
-from utilities import (PATH, is_git_repo, it, logger, new_git_commits,
-                       print_logo, race_append, race_read_json, race_write,
-                       sigfig, trace)
+from utilities import (
+    PATH,
+    is_git_repo,
+    it,
+    logger,
+    new_git_commits,
+    print_logo,
+    race_append,
+    race_read_json,
+    race_write,
+    sigfig,
+    trace,
+)
 
 # ######################################################################################
 # ######################################################################################
@@ -209,7 +218,9 @@ def process_data(cex, dex, forex):
         if exchange in cex["BTC:USDT"]["data"]
     }
 
-    agg_btsbtc_dict = {source: price / btcusd for price, source in forex["aggregate"]["BTS:USD"]}
+    agg_btsbtc_dict = {
+        source: price / btcusd for price, source in forex["aggregate"]["BTS:USD"]
+    }
 
     # Gather DEX BTS:BTC prices
     dex_btsbtc_list, dex_btsbtc_dict = gather_dex_btsbtc(dex, cex)
@@ -240,7 +251,8 @@ def process_data(cex, dex, forex):
     # Prepare forex feeds
     forexfeedusd = {pair: value[0] for pair, value in forex["medians"].items()}
     forexfeedbts = {
-        f"BTS:{pair.split(':')[1]}": btsusd * value for pair, value in forexfeedusd.items()
+        f"BTS:{pair.split(':')[1]}": btsusd * value
+        for pair, value in forexfeedusd.items()
     }
 
     # Prepare crypto feeds
@@ -250,10 +262,13 @@ def process_data(cex, dex, forex):
         if coin not in ["BTC:USD", "BTS:BTC", "BTS:USDT"]
     }
     cryptofeedbts = {
-        f"BTS:{pair.split(':')[1]}": btsbtc / value for pair, value in cryptofeedbtc.items()
+        f"BTS:{pair.split(':')[1]}": btsbtc / value
+        for pair, value in cryptofeedbtc.items()
     }
     cryptofeedbtc = {
-        coin: 1 / value for coin, value in cryptofeedbtc.items() if coin in ["BTC:XRP", "BTC:ETH"]
+        coin: 1 / value
+        for coin, value in cryptofeedbtc.items()
+        if coin in ["BTC:XRP", "BTC:ETH"]
     }
 
     # Create the final feed
@@ -267,7 +282,9 @@ def process_data(cex, dex, forex):
     feed = {k: sigfig(v) for k, v in feed.items()}
 
     # Create inverse feed
-    inverse_feed = {":".join(k.split(":")[::-1]): sigfig(1 / v) for k, v in feed.items()}
+    inverse_feed = {
+        ":".join(k.split(":")[::-1]): sigfig(1 / v) for k, v in feed.items()
+    }
 
     return feed, inverse_feed
 
@@ -289,7 +306,9 @@ def gather_data(name, wif, publish):
             # FIXME this leaves a file "dangling" open, probably not the best
             print("REDIRECTING STDOUT TO LOG")
             sys.stdout.close()
-            sys.stdout = open(os.path.join(PATH, "pipe", f"log{int(time.time())}.txt"), "w")
+            sys.stdout = open(
+                os.path.join(PATH, "pipe", f"log{int(time.time())}.txt"), "w"
+            )
         try:
             # collect forex and cex data
             forex_proc = Process(target=pricefeed_forex)
@@ -331,7 +350,9 @@ def gather_data(name, wif, publish):
             # publish feed prices to the blockchain
             if publish:
                 try:
-                    race_write(doc=f"price_log_{time.ctime()}.txt", text=json.dumps(prices))
+                    race_write(
+                        doc=f"price_log_{time.ctime()}.txt", text=json.dumps(prices)
+                    )
                     print("\n", it("red", "PUBLISHING TO BLOCKCHAIN"))
                     time.sleep(5)
                     publish_feed(prices, name, wif)
@@ -361,7 +382,9 @@ def gather_data(name, wif, publish):
 def authenticate_account():
     """Authenticate user account based on Bitshares agent name and WIF."""
     while True:
-        account_name = input("\n  Bitshares" + it("yellow", " AGENT NAME:\n\n           "))
+        account_name = input(
+            "\n  Bitshares" + it("yellow", " AGENT NAME:\n\n           ")
+        )
         try:
             rpc = wss_handshake()
             try:
@@ -420,7 +443,9 @@ def main():
                 # restart this script
                 os.execv(sys.executable, ["python"] + sys.argv)
             else:
-                print(it("yellow", "Okay...  Make sure you know why you're doing this."))
+                print(
+                    it("yellow", "Okay...  Make sure you know why you're doing this.")
+                )
     else:
         print(
             it(

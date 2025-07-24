@@ -2,7 +2,6 @@
 full list of HONEST tokens with ids
 """
 
-
 POOL_TOKENS = {
     "HONEST.USDBTSMM": "1.3.5901",
     "HONEST.BTCUSDMM": "1.3.5938",

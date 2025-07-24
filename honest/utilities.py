@@ -12,6 +12,7 @@ litepresence2020
 """
 
 import json
+
 # STANDARD PYTHON MODULES
 import math
 import os
@@ -307,10 +308,10 @@ def correct_pair(exchange, pair, reverse=False):
         "hitbtc": {"EOS": "A"},
         "kucoin": {"EOS": "A"},
         "mexc": {"EOS": "A"},
-        "xt": {"EOS": "A"}
+        "xt": {"EOS": "A"},
     }
     if reverse:
-        lookup = {k:{nt:t for t, nt in v.items()} for k, v in lookup.items()}
+        lookup = {k: {nt: t for t, nt in v.items()} for k, v in lookup.items()}
     for token in [asset, currency]:
         new_pair.append(lookup.get(exchange, {}).get(token, token))
     return "/".join(new_pair)

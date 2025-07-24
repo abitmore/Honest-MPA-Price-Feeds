@@ -16,6 +16,7 @@ litepresence2020
 """
 
 import sys
+
 # STANDARD PYTHON MODULES
 import time
 from json import dumps as json_dumps
@@ -23,6 +24,7 @@ from json import loads as json_loads
 
 # THIRD PARTY MODULES
 import requests
+
 # PRICE FEED MODULES
 from utilities import it, race_write, refine_data
 
@@ -98,9 +100,13 @@ def duckduckgo(site):
             )
             ret = json_loads(raw)
             if currency in ["XAU", "XAG"]:
-                data["USD:" + currency] = 1 / [i["mid"] for i in ret["to"] if i["quotecurrency"] == "USD"][0]
+                data["USD:" + currency] = (
+                    1 / [i["mid"] for i in ret["to"] if i["quotecurrency"] == "USD"][0]
+                )
             else:
-                data["USD:" + currency] = [i["mid"] for i in ret["to"] if i["quotecurrency"] == currency][0]
+                data["USD:" + currency] = [
+                    i["mid"] for i in ret["to"] if i["quotecurrency"] == currency
+                ][0]
             time.sleep(1)
         data = refine_data(data)
         print(it("purple", "FOREX SCRAPE:"), site, data)

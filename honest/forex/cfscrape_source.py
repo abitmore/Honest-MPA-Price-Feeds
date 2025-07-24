@@ -19,8 +19,10 @@ from json import dumps as json_dumps
 from json import loads as json_loads
 
 import cfscrape
+
 # THIRD PARTY MODULES
 import requests
+
 # PRICE FEED MODULES
 from utilities import it, race_write, refine_data
 

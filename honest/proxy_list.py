@@ -276,14 +276,19 @@ class ProxyManager:
             children[-1].start()
             time.sleep(0.05)
 
-        print(it("cyan", "PROXY:"), "All proxy checks started, waiting for responses...")
+        print(
+            it("cyan", "PROXY:"), "All proxy checks started, waiting for responses..."
+        )
 
         for child in children:
             child.join()
         self.save_list(self.blacklist, "black")
         self.save_list(self.whitelist, "white")
         self.save_list([i for i in self.proxies if i not in self.blacklist], "grey")
-        print(it("cyan", "PROXY:"), f"Proxy checking done! {len(self.blacklist)} blacklisted, {len(self.proxies)} left.")
+        print(
+            it("cyan", "PROXY:"),
+            f"Proxy checking done! {len(self.blacklist)} blacklisted, {len(self.proxies)} left.",
+        )
 
     def get_proxy(self):
         if random.random() > 0.5 and self.whitelist:
@@ -348,8 +353,8 @@ class ProxyManager:
 
             # Directly set the proxy for this specific session using the proxies attribute
             session.proxies = {
-                'http': f'socks5://{proxy_host}:{proxy_port}',
-                'https': f'socks5://{proxy_host}:{proxy_port}',
+                "http": f"socks5://{proxy_host}:{proxy_port}",
+                "https": f"socks5://{proxy_host}:{proxy_port}",
             }
             resp = session.get(*args, timeout=5, **kwargs)
             if resp.status_code == 200:

@@ -10,6 +10,7 @@ CEX BTC:USD and BTS:BTC data aggregation script
 
 litepresence2020
 """
+
 # STANDARD MODULES
 import os
 import time
@@ -88,16 +89,27 @@ def get_price(proxy_manager, exchange, pairs):
             if individual:
                 tickers = {}
                 for pair in pairs:
-                    tickers[pair] = exchange_obj.fetch_ticker(correct_pair(exchange, pair))
+                    tickers[pair] = exchange_obj.fetch_ticker(
+                        correct_pair(exchange, pair)
+                    )
                     time.sleep(0.5)
             else:
-                tickers = exchange_obj.fetch_tickers([correct_pair(exchange, pair) for pair in pairs])
+                tickers = exchange_obj.fetch_tickers(
+                    [correct_pair(exchange, pair) for pair in pairs]
+                )
             # get the last price from each, moving back from CCXT style to HONEST style
-            data = {correct_pair(exchange, i["symbol"], reverse=True).replace("/", ":"): i["last"] for i in tickers.values()}
+            data = {
+                correct_pair(exchange, i["symbol"], reverse=True).replace("/", ":"): i[
+                    "last"
+                ]
+                for i in tickers.values()
+            }
             break
         except ccxt.errors.BadSymbol as error:
             badsymbol = error.args[0].rsplit(" ", 1)[1]
-            if badsymbol != (corrected_bad_sym:=correct_pair(exchange, badsymbol, reverse=True)):
+            if badsymbol != (
+                corrected_bad_sym := correct_pair(exchange, badsymbol, reverse=True)
+            ):
                 corrected_bad_sym, badsymbol = badsymbol, corrected_bad_sym
             else:
                 corrected_bad_sym = ""

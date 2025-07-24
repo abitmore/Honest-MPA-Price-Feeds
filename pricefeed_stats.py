@@ -5,7 +5,7 @@ Program Flow:
 
 Every hour:
  > Loop through all MPAs
- > > Get median settlement price 
+ > > Get median settlement price
  > > Loop through all producers
  > > > If producer is stale by more than an hour and a half...
  > > > or the settlement price is different from the median by more than 5%
@@ -16,6 +16,7 @@ This script is entirely self contained, aside from the websocket-client dependen
 meaning that it can be run as its own file completely separate from the rest of the
 HONEST codebase.
 """
+
 # pylint: disable=broad-exception-caught
 
 # STANDARD MODULES

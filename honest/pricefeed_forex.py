@@ -20,14 +20,36 @@ from pprint import pprint
 from statistics import median
 
 # PRICE FEED MODULES
-from forex.api_source import (barchart, currencyconverter, fixerio, fscapi,
-                              fxmarket, openexchangerates)
+from forex.api_source import (
+    barchart,
+    currencyconverter,
+    fixerio,
+    fscapi,
+    fxmarket,
+    openexchangerates,
+)
 from forex.bts_source import cmc, cryptocomp, google
 from forex.cfscrape_source import fxcm, fxempire1
-from forex.commodities import (arincen, bitpanda, businessinsider, cnbc,
-                               commoditycom, mql5)
-from forex.scrape_source import (aastock, currencyme, duckduckgo, forexrates,
-                                 ino, liveusd, oanda, ratewidget, wocu, yahoo)
+from forex.commodities import (
+    arincen,
+    bitpanda,
+    businessinsider,
+    cnbc,
+    commoditycom,
+    mql5,
+)
+from forex.scrape_source import (
+    aastock,
+    currencyme,
+    duckduckgo,
+    forexrates,
+    ino,
+    liveusd,
+    oanda,
+    ratewidget,
+    wocu,
+    yahoo,
+)
 from utilities import it, race_read_json, race_write, ret_markets, sigfig
 
 # GLOBAL CONSTANTS

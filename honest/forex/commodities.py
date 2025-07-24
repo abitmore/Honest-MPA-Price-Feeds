@@ -40,10 +40,10 @@ def cnbc(site):
     try:
         response = requests.get(url, headers=headers, params=params)
         ret = response.json()
-        prices["USD:XAU"] = 1/float(
+        prices["USD:XAU"] = 1 / float(
             ret["FormattedQuoteResult"]["FormattedQuote"][0]["last"].replace(",", "")
         )
-        prices["USD:XAG"] = 1/float(
+        prices["USD:XAG"] = 1 / float(
             ret["FormattedQuoteResult"]["FormattedQuote"][1]["last"].replace(",", "")
         )
 
@@ -60,13 +60,13 @@ def arincen(site):
         response = requests.get(url, timeout=10)
         ret = response.text.lower()
         ret = ret.split("footer_warning")[2]
-        result["USD:XAG"] = 1/float(
+        result["USD:XAG"] = 1 / float(
             ret.split("xagusd", 1)[1]
             .split("volume&quot")[0]
             .split("last_price&quot;:")[1]
             .split(",&quot;")[0]
         )
-        result["USD:XAU"] = 1/float(
+        result["USD:XAU"] = 1 / float(
             ret.split("xauusd", 1)[1]
             .split("volume&quot")[0]
             .split("last_price&quot;:")[1]
@@ -88,7 +88,7 @@ def bitpanda(site):
         url_gold = "https://api.bitpanda.com/v3/ohlc/b86c88d4-efe3-11eb-b56f-0691764446a7/USD/day"
         try:
             response_gold = requests.get(url_gold)
-            gold_price_grams = 1/float(
+            gold_price_grams = 1 / float(
                 response_gold.json()["data"][-1]["attributes"]["close"]
             )
             prices["USD:XAU"] = gold_price_grams / grams_to_troy_ounces
@@ -99,7 +99,7 @@ def bitpanda(site):
 
         try:
             response_silver = requests.get(url_silver)
-            silver_price_grams = 1/float(
+            silver_price_grams = 1 / float(
                 response_silver.json()["data"][-1]["attributes"]["close"]
             )
             prices["USD:XAG"] = silver_price_grams / grams_to_troy_ounces
@@ -122,13 +122,13 @@ def commoditycom(site):
     try:
         url = "https://commodity.com/wp-content/plugins/commodity-price-graph/live-prices.php?symbol=XAU/USD"
         try:
-            prices["USD:XAU"] = 1/float(requests.get(url).json()["close"])
+            prices["USD:XAU"] = 1 / float(requests.get(url).json()["close"])
         except:
             pass
 
         url = "https://commodity.com/wp-content/plugins/commodity-price-graph/live-prices.php?symbol=XAG/USD"
         try:
-            prices["USD:XAG"] = 1/float(requests.get(url).json()["close"])
+            prices["USD:XAG"] = 1 / float(requests.get(url).json()["close"])
         except:
             pass
 
@@ -151,10 +151,10 @@ def businessinsider(site):
         ret = response.text
         ret = ret.split("Precious Metals")[1].split("Energy")[0].split("</tr>")
 
-        result["USD:XAU"] = 1/float(
+        result["USD:XAU"] = 1 / float(
             ret[1].split('data-animation="">')[1].split("</span>")[0].replace(",", "")
         )
-        result["USD:XAG"] = 1/float(
+        result["USD:XAG"] = 1 / float(
             ret[4].split('data-animation="">')[1].split("</span>")[0].replace(",", "")
         )
         print(it("purple", "FOREX API:"), site, result)
@@ -171,8 +171,8 @@ def mql5(site):
         ret = ret.split('class="nav-cards nav-cards__no-more">')[1]
         ret = ret.split('<div class="nav-card" id="card_XAUEUR">')[0]
         ret = ret.split('"Ask price">')
-        prices["USD:XAU"] = 1/float(ret[1].split("</span>")[0])
-        prices["USD:XAG"] = 1/float(ret[2].split("</span>")[0])
+        prices["USD:XAU"] = 1 / float(ret[1].split("</span>")[0])
+        prices["USD:XAG"] = 1 / float(ret[2].split("</span>")[0])
 
         print(it("purple", "FOREX API:"), site, prices)
         race_write(f"{site}_forex.txt", json.dumps(prices))

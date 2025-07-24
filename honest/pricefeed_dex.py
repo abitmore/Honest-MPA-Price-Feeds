@@ -30,11 +30,13 @@ from os import popen
 from random import random, shuffle
 from statistics import median, mode
 from sys import stdout
+
 # STANDARD PYTHON MODULES
 from time import ctime, sleep, strptime, time
 from traceback import format_exc
 
 import numpy as np
+
 # THIRD PARTY MODULES
 from psutil import Process as psutil_Process
 from websocket import create_connection as wss
@@ -42,10 +44,22 @@ from websocket import enableTrace
 
 from config_nodes import public_nodes
 from exchanges import EXCHANGES
+
 # HONEST PRICE FEED MODULES
-from utilities import (PATH, at, is_git_repo, it, new_git_commits, print_logo,
-                       race_append, race_read, race_write, sigfig,
-                       string_width, trace)
+from utilities import (
+    PATH,
+    at,
+    is_git_repo,
+    it,
+    new_git_commits,
+    print_logo,
+    race_append,
+    race_read,
+    race_write,
+    sigfig,
+    string_width,
+    trace,
+)
 
 # ======================================================================
 VERSION = "HONEST MPA DEX FEED 0.00000001"
@@ -202,7 +216,9 @@ def rpc_last(rpc, cache):  # DONE
     last = {}
 
     for currency in CURRENCIES:
-        ticker = wss_query(rpc, ["database", "get_ticker", [currency, cache["asset"], False]])
+        ticker = wss_query(
+            rpc, ["database", "get_ticker", [currency, cache["asset"], False]]
+        )
         last[currency] = float(precision(ticker["latest"], 16))
         if last[currency] == 0:
             raise ValueError("zero price last")
@@ -219,7 +235,9 @@ def rpc_pool_last(rpc, cache):
         # get all the pools for this pair
         pools = [
             i
-            for i in wss_query(rpc, ["database", "get_liquidity_pools_by_asset_b", [get_obj["id"]]])
+            for i in wss_query(
+                rpc, ["database", "get_liquidity_pools_by_asset_b", [get_obj["id"]]]
+            )
             if i["asset_a"] == "1.3.0"
         ]
         if not pools:
@@ -512,15 +530,17 @@ def dex_table(local_vars):
         table = [[" " * 16] + [i.ljust(10) for i in gateway_tokens]]
         for gateway in gateways:
             row = [gateway.ljust(10)] + [
-                str(sigfig(local_vars["last"].get(f"{gateway}.{token}", -1), 4)).ljust(10)
+                str(sigfig(local_vars["last"].get(f"{gateway}.{token}", -1), 4)).ljust(
+                    10
+                )
                 for token in gateway_tokens
             ]
             row = [
-                i
-                if not any(j.isdigit() for j in i)
-                else it("green", i)
-                if "-1" not in i
-                else it("yellow", i)
+                (
+                    i
+                    if not any(j.isdigit() for j in i)
+                    else it("green", i) if "-1" not in i else it("yellow", i)
+                )
                 for i in row
             ]
             table.append(row)
@@ -568,13 +588,11 @@ def cex_table(local_vars):
             # print header
             cex_string += " " * exchange_just + "".join(
                 it(
-                    "white"
-                    if count >= 7
-                    else "yellow"
-                    if count >= 5
-                    else "red"
-                    if count >= 2
-                    else "cyan",
+                    (
+                        "white"
+                        if count >= 7
+                        else "yellow" if count >= 5 else "red" if count >= 2 else "cyan"
+                    ),
                     coin.ljust(just_size),
                 )
                 for coin, count in zip(pairs, n_prices)
@@ -590,14 +608,18 @@ def cex_table(local_vars):
                         [
                             it(
                                 (
-                                    "green"
-                                    if i != -1 or rdx >= len(exchanges)
-                                    else "red"
-                                    if exchanges[rdx] in EXCHANGES[pairs[idx]]
-                                    else "yellow"
-                                )
-                                if row[0] != "median"
-                                else "cyan",
+                                    (
+                                        "green"
+                                        if i != -1 or rdx >= len(exchanges)
+                                        else (
+                                            "red"
+                                            if exchanges[rdx] in EXCHANGES[pairs[idx]]
+                                            else "yellow"
+                                        )
+                                    )
+                                    if row[0] != "median"
+                                    else "cyan"
+                                ),
                                 str(sigfig(i, 4)).ljust(just_size),
                             )
                             for idx, i in enumerate(row[1:])
@@ -605,7 +627,9 @@ def cex_table(local_vars):
                     )
                 )
             cex_string = (
-                it("yellow", " CEX ".center(string_width(cex_string), "═")) + "\n\n" + cex_string
+                it("yellow", " CEX ".center(string_width(cex_string), "═"))
+                + "\n\n"
+                + cex_string
             )
     except Exception as error:
         if DEV:
@@ -648,13 +672,11 @@ def forex_table(local_vars):
             # print header
             forex_string += " " * source_just + "".join(
                 it(
-                    "white"
-                    if count >= 7
-                    else "yellow"
-                    if count >= 5
-                    else "red"
-                    if count >= 2
-                    else "cyan",
+                    (
+                        "white"
+                        if count >= 7
+                        else "yellow" if count >= 5 else "red" if count >= 2 else "cyan"
+                    ),
                     coin.ljust(just_size),
                 )
                 for coin, count in zip(pairs, n_prices)
@@ -664,16 +686,20 @@ def forex_table(local_vars):
                     (
                         it("red", row[0].ljust(source_just))
                         if all(i == -1 for i in row[1:])
-                        else row[0].ljust(source_just)
-                        if row[0] != "median"
-                        else it("purple", row[0].center(source_just))
+                        else (
+                            row[0].ljust(source_just)
+                            if row[0] != "median"
+                            else it("purple", row[0].center(source_just))
+                        )
                     )
                     + "".join(
                         [
                             it(
-                                ("green" if i != -1 else "yellow")
-                                if row[0] != "median"
-                                else "cyan",
+                                (
+                                    ("green" if i != -1 else "yellow")
+                                    if row[0] != "median"
+                                    else "cyan"
+                                ),
                                 str(sigfig(i, 4)).ljust(just_size),
                             )
                             for idx, i in enumerate(row[1:])
@@ -708,7 +734,8 @@ def final_table(local_vars):
                 table.append([pair, str(sigfig(price, 5))])
             just = max([max(map(len, row)) for row in table])
             final_string = "\n".join(
-                "".join([row[0].ljust(just), it("cyan", row[1]).ljust(just)]) for row in table
+                "".join([row[0].ljust(just), it("cyan", row[1]).ljust(just)])
+                for row in table
             )
     except Exception as error:
         # if DEV:
@@ -904,7 +931,9 @@ def thresh(storage, process, epoch, pid, cache):
                     ping,
                     keys,
                 ) = get_system_metrics(storage, process, cache)
-                usd, btc, implied_btcusd, usd_dict, btc_dict = process_price_data(m_last)
+                usd, btc, implied_btcusd, usd_dict, btc_dict = process_price_data(
+                    m_last
+                )
 
                 print_status(locals())
                 calculate_cross_rates()
@@ -1306,7 +1335,9 @@ def spawn(storage, cache):
     multinode = {}
     for proc in range(PROCESSES):
         proc_id += 1
-        multinode[str(proc)] = Process(target=thresh, args=(storage, proc, epoch, proc_id, cache))
+        multinode[str(proc)] = Process(
+            target=thresh, args=(storage, proc, epoch, proc_id, cache)
+        )
         multinode[str(proc)].daemon = False
         multinode[str(proc)].start()
         sleep(0.01)
@@ -1395,7 +1426,8 @@ def print_market(storage, cache):
     )
     print("==================================================")
     currencies = [
-        (key, val, cache["currency_precision"][key]) for key, val in cache["currency_id"].items()
+        (key, val, cache["currency_precision"][key])
+        for key, val in cache["currency_id"].items()
     ]
 
     print("CURRENCIES: ", currencies)

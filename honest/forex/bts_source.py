@@ -9,12 +9,16 @@ def google(site):
         url = "https://www.google.com/finance/quote/BTS-USD"
         for _ in range(3):
             try:
-                ret = float(requests.get(url).text.split('<div class="YMlKec fxKbKc">')[1].split("</div>")[0])
+                ret = float(
+                    requests.get(url)
+                    .text.split('<div class="YMlKec fxKbKc">')[1]
+                    .split("</div>")[0]
+                )
                 break
             except:
                 pass
 
-        data = {"BTS:USD":ret}
+        data = {"BTS:USD": ret}
 
         print(it("purple", "FOREX API:"), site, data)
         race_write(f"{site}_forex.txt", json.dumps(data))
@@ -26,9 +30,9 @@ def cmc(site):
     try:
         url = "https://coinmarketcap.com/currencies/bitshares/"
         ret = requests.get(url).text
-        ret = ret.split('The live BitShares price today is $')[1].split("USD")[0]
+        ret = ret.split("The live BitShares price today is $")[1].split("USD")[0]
 
-        data = {"BTS:USD":float(ret.strip())}
+        data = {"BTS:USD": float(ret.strip())}
         print(it("purple", "FOREX API:"), site, data)
         race_write(f"{site}_forex.txt", json.dumps(data))
     except:
@@ -43,7 +47,7 @@ def cryptocomp(site):
         ret = requests.get(url).json()
         ret = float(ret["Data"][-1]["CLOSE"])
 
-        data = {"BTS:USD":ret}
+        data = {"BTS:USD": ret}
 
         print(it("purple", "FOREX API:"), site, data)
         race_write(f"{site}_forex.txt", json.dumps(data))
