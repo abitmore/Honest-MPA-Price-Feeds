@@ -36,14 +36,11 @@ from time import ctime, sleep, strptime, time
 from traceback import format_exc
 
 import numpy as np
+from config_nodes import public_nodes
+from exchanges import EXCHANGES
 
 # THIRD PARTY MODULES
 from psutil import Process as psutil_Process
-from websocket import create_connection as wss
-from websocket import enableTrace
-
-from config_nodes import public_nodes
-from exchanges import EXCHANGES
 
 # HONEST PRICE FEED MODULES
 from utilities import (
@@ -60,6 +57,8 @@ from utilities import (
     string_width,
     trace,
 )
+from websocket import create_connection as wss
+from websocket import enableTrace
 
 # ======================================================================
 VERSION = "HONEST MPA DEX FEED 0.00000001"

@@ -6,7 +6,8 @@ pkg-config and libsecp256k1 installations
 
 import os
 from subprocess import call
-from setuptools import setup, find_packages
+
+from setuptools import find_packages, setup
 
 
 def sudos():

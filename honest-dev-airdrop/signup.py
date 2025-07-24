@@ -1,6 +1,7 @@
 import json
-from requests import get
 import math
+
+from requests import get
 
 url = "https://api.github.com/repos/{}/contributors"
 

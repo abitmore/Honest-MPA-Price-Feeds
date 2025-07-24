@@ -22,11 +22,12 @@ import json
 import os
 import subprocess
 import sys
-import psutil
 import time
 from getpass import getpass
 from multiprocessing import Process
 from statistics import median
+
+import psutil
 
 # 3RD PARTY MODULES
 from bitshares_signing import broker
