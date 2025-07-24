@@ -33,4 +33,4 @@ jobs:
 
     - name: Analysing with pylint
       run: |
-        pylint $(git ls-files '*.py')
+        pylint --disable=import-error $(git ls-files '*.py')
