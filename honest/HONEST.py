@@ -8,6 +8,12 @@
 
 final aggregation and call to publish feed on chain and at jsonbin.io
 
+command line args:
+
+ --publish: whether or not to publish to blockchain
+ --headless: whether to ask questions via input or use environment variables
+ --oneshot: whether to run once or indefinitely
+
 litepresence2020
 """
 
@@ -16,6 +22,7 @@ import json
 import os
 import subprocess
 import sys
+import psutil
 import time
 from getpass import getpass
 from multiprocessing import Process
@@ -289,7 +296,7 @@ def process_data(cex, dex, forex):
     return feed, inverse_feed
 
 
-def gather_data(name, wif, publish):
+def gather_data(name, wif, publish, oneshot=False):
     """
     primary event loop
     """
@@ -376,6 +383,15 @@ def gather_data(name, wif, publish):
             text=f"\n\n\n{int(time.time())} {time.ctime()}\n{feed}",
         )
         updates += 1
+
+        # if running once, don't loop around
+        if oneshot:
+            parent = psutil.Process(dex_process.pid)
+            for child in parent.children(recursive=True):
+                child.kill()
+            dex_process.terminate()
+            forex_proc.terminate()
+            return
         time.sleep(REFRESH)
 
 
@@ -458,20 +474,27 @@ def main():
     # create the pipe folder if it does not exist
     os.makedirs(os.path.join(PATH, "pipe"), exist_ok=True)
 
-    # Trigger inputs for various actions
-    publish = (
-        "y"
-        in input(
-            f'\n   y + Enter to {it("cyan", "PUBLISH")} or Enter to skip\n\n          '
-        ).lower()
-    )
-    if publish:
-        name, wif = authenticate_account()
+    if "--headless" in sys.argv:
+        publish = "--publish" in sys.argv
+        if publish:
+            name, wif = os.environ("USERNAME"), os.environ("WIF")
+        else:
+            name, wif = "", ""
     else:
-        name, wif = "", ""
+        # Trigger inputs for various actions
+        publish = (
+            "y"
+            in input(
+                f'\n   y + Enter to {it("cyan", "PUBLISH")} or Enter to skip\n\n          '
+            ).lower()
+        )
+        if publish:
+            name, wif = authenticate_account()
+        else:
+            name, wif = "", ""
 
     # Proceed to gather data
-    gather_data(name, wif, publish)
+    gather_data(name, wif, publish, oneshot="--oneshot" in sys.argv)
 
 
 if __name__ == "__main__":
